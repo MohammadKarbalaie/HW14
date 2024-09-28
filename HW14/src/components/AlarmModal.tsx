@@ -1,9 +1,9 @@
 import React from 'react';  
-import { Alarm } from './types';  
+import { AlarmWithId } from './types';  
 
 interface AlarmModalProps {  
     isOpen: boolean;  
-    alarm: Alarm | null;  
+    alarm: AlarmWithId | null;  
     onClose: () => void;  
     onDismiss: () => void;  
 }  

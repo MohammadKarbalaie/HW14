@@ -5,7 +5,7 @@ function App() {
  
   return (
     <>
-      <div className='max-w-screen-xl mx-[auto] my-[0] p-8 text-center'>
+      <div className='max-w-[600px] mx-auto p-8 text-center'>
           <R_alarm/>
       </div>
     </>

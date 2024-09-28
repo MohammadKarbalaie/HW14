@@ -1,18 +1,18 @@
 import React from 'react';  
-import { Alarm } from './types';
+import { AlarmWithId } from './types';
 
 interface AlarmListProps {  
-  alarms: Alarm[];  
-  onEdit: (alarm: Alarm) => void;  
+  alarms: AlarmWithId[];  
+  onEdit: (alarm: AlarmWithId) => void;  
   onDelete: (index: number) => void;  
-  onTrigger: (alarm: Alarm) => void;  
+  onTrigger: (alarm: AlarmWithId) => void;  
 }  
 
 const AlarmList: React.FC<AlarmListProps> = ({ alarms, onEdit, onDelete, onTrigger }) => {  
   return (  
     <div>  
       {alarms.map((alarm, index) => (  
-        <div key={index} className="flex justify-between items-center border p-2 mb-2 rounded-lg">  
+        <div key={index} className="flex justify-between items-center border bg-slate-400 uppercase text-white px-3 py-3 mb-2 rounded-lg shadow-slate-900 shadow-2xl delay-900">  
           <span>{alarm.title} - {alarm.time}</span>  
           <div>  
             <button onClick={() => onEdit(alarm)} className="bg-blue-500 text-white mr-2 ml-4 px-4 py-2 rounded-lg">Edit</button>  

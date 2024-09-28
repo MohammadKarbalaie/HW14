@@ -1,8 +1,8 @@
 import React, { useState } from 'react';   
-import { FAlarm } from './formtype';   
+import { AlarmWithouId } from './types';   
 
 interface AlarmFormProps {  
-  onAddAlarm: (alarm: FAlarm) => void; // تعیین نوع Alarm  
+  onAddAlarm: (alarm: AlarmWithouId) => void; // تعیین نوع Alarm  
 }  
 
 const AlarmForm: React.FC<AlarmFormProps> = ({ onAddAlarm }) => {  
@@ -21,7 +21,7 @@ const AlarmForm: React.FC<AlarmFormProps> = ({ onAddAlarm }) => {
   };  
 
   return (  
-    <form onSubmit={handleSubmit} className="max-w-96 w-full flex flex-col items-center mb-4 bg-slate-600 rounded-3xl py-10 shadow-2xl">  
+    <form onSubmit={handleSubmit} className="max-w-96 w-full flex flex-col items-center mb-4 bg-slate-600 gap-2 rounded-3xl py-10 shadow-2xl">  
       <input  
         type="time"  
         value={time}  
@@ -45,9 +45,7 @@ const AlarmForm: React.FC<AlarmFormProps> = ({ onAddAlarm }) => {
         required  
         className="mb-2 border px-20 py-2 rounded-3xl"  
       />  
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-xl">  
-        Add Alarm  
-      </button>  
+      <button type="submit" className="bg-blue-500 text-white px-4 py-3 rounded-xl"><i className='fas fa-clock mr-2'></i>Add Alarm</button>  
     </form>  
   );  
 };  

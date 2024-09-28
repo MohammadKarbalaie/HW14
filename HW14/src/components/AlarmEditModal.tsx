@@ -1,11 +1,11 @@
 import React, { useState } from 'react';  
-import { Alarm } from './types';  
+import { AlarmWithId } from './types';  
 
 interface AlarmEditModalProps {  
     isOpen: boolean;  
-    alarm: Alarm | null;  
+    alarm: AlarmWithId | null;  
     onClose: () => void;  
-    onSave: (updatedAlarm: Alarm) => void;  
+    onSave: (updatedAlarm: AlarmWithId) => void;  
 }  
 
 const AlarmEditModal: React.FC<AlarmEditModalProps> = ({ isOpen, alarm, onClose, onSave }) => {  
@@ -26,7 +26,7 @@ const AlarmEditModal: React.FC<AlarmEditModalProps> = ({ isOpen, alarm, onClose,
     return (  
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">  
             <div className="bg-white p-6 rounded shadow-md">  
-                <h2 className="text-lg mb-4">Edit Alarm</h2>  
+                <h2 className="text-lg mb-4"><i className='fas fa-stopwatch mr-2 text-red-600'></i>Edit Alarm</h2>  
                 <form onSubmit={handleSubmit} className='flex flex-col gap-4'>  
                     <input  
                         type="time"  

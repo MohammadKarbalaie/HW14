@@ -2,15 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import AlarmForm from './AlarmForm';  
 import AlarmList from './AlarmList';  
 import AlarmModal from './AlarmModal';  
-import { Alarm } from './types'; 
-import { FAlarm } from './formtype';   
+import { AlarmWithId,AlarmWithouId } from './types'; 
 import AlarmEditModal from './AlarmEditModal';  
 
 const R_Alarm: React.FC = () => {  
-    const [alarms, setAlarms] = useState<Alarm[]>(() => JSON.parse(localStorage.getItem('alarms') || '[]')); 
+    const [alarms, setAlarms] = useState<AlarmWithId[]>(() => JSON.parse(localStorage.getItem('alarms') || '[]')); 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);  
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);  
-    const [currentAlarm, setCurrentAlarm] = useState<Alarm | null>(null);  
+    const [currentAlarm, setCurrentAlarm] = useState<AlarmWithId | null>(null);  
     const audioRef = useRef<HTMLAudioElement>(new Audio('../assets/alarm-sound.mp3'));  
 
     useEffect(() => {  
@@ -31,7 +30,7 @@ const R_Alarm: React.FC = () => {
         return () => clearInterval(interval);  
     }, [alarms, currentAlarm]);  
 
-    const addAlarm = (alarm: FAlarm) => {  
+    const addAlarm = (alarm: AlarmWithouId) => {  
         setAlarms((prevAlarms) => [...prevAlarms, alarm]);  
     };  
 
@@ -46,7 +45,7 @@ const R_Alarm: React.FC = () => {
         setAlarms(newAlarms);  
     };  
 
-    const openEditModal = (alarm: Alarm) => {  
+    const openEditModal = (alarm: AlarmWithId) => {  
         setCurrentAlarm(alarm);  
         setIsEditModalOpen(true);  
     };  
@@ -56,14 +55,14 @@ const R_Alarm: React.FC = () => {
         setCurrentAlarm(null);  
     };  
 
-    const saveUpdatedAlarm = (updatedAlarm: Alarm) => {  
+    const saveUpdatedAlarm = (updatedAlarm: AlarmWithId) => {  
         setAlarms((prevAlarms) =>   
             prevAlarms.map((alarm) => (alarm.id === updatedAlarm.id ? updatedAlarm : alarm))  
         );  
         closeEditModal();  
     };  
 
-    const triggerAlarm = (alarm: Alarm) => {  
+    const triggerAlarm = (alarm: AlarmWithId) => {  
         setCurrentAlarm(alarm);  
         audioRef.current.play();  
         setIsModalOpen(true);  
