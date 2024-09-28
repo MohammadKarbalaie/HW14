@@ -1,8 +1,8 @@
 import React, { useState } from 'react';   
-import { Alarm } from './types';   
+import { FAlarm } from './formtype';   
 
 interface AlarmFormProps {  
-  onAddAlarm: (alarm: Alarm) => void; // تعیین نوع Alarm  
+  onAddAlarm: (alarm: FAlarm) => void; // تعیین نوع Alarm  
 }  
 
 const AlarmForm: React.FC<AlarmFormProps> = ({ onAddAlarm }) => {  

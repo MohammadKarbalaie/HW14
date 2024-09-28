@@ -1,5 +1,4 @@
-export interface Alarm {  
-    id?:number
+export interface FAlarm {  
     time: string;  
     title: string;       
     description: string;  
