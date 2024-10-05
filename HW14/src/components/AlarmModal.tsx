@@ -5,7 +5,7 @@ interface AlarmModalProps {
   isOpen: boolean;
   alarm: AlarmWithId | null;
   onClose: () => void;
-  onDismiss: () => void; // This function will be called on "Turn Off"
+  onDismiss: () => void; 
   onExtend: (newTime: string) => void;
   onDelete: () => void;
 }
@@ -38,28 +38,28 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ isOpen, alarm, onClose, onDismi
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
-                onClick={onDismiss} // دکمه "Turn Off" به درستی به onDismiss متصل است
+                onClick={onDismiss} 
                 className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
               >
                 Turn off
               </button>
               <button
                 type="button"
-                onClick={() => onExtend("New Time Here")} // دکمه برای افزایش زمان
+                onClick={() => onExtend("New Time Here")}     
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:mt-0 sm:w-auto"
               >
                 Extend Alarm
               </button>
               <button
                 type="button"
-                onClick={onDelete} // دکمه حذف
+                onClick={onDelete} 
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:mt-0 sm:w-auto"
               >
                 Delete Alarm
               </button>
               <button
                 type="button"
-                onClick={onClose} // دکمه بستن
+                onClick={onClose} 
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
               >
                 Close

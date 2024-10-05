@@ -9,7 +9,7 @@ interface AlarmEditModalProps {
 }  
 
 const AlarmEditModal: React.FC<AlarmEditModalProps> = ({ isOpen, alarm, onClose, onSave }) => {  
-    const [time, setTime] = useState<string>(alarm ? alarm.time : '');  
+     
     const [title, setTitle] = useState<string>(alarm ? alarm.title : '');  
     const [description, setDescription] = useState<string>(alarm ? alarm.description : '');  
 
@@ -17,9 +17,9 @@ const AlarmEditModal: React.FC<AlarmEditModalProps> = ({ isOpen, alarm, onClose,
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {  
         e.preventDefault();  
-        if (!time || !title || !description) return;  
+        if (!title || !description) return;  
 
-        onSave({ ...alarm!, time, title, description });  
+        onSave({ ...alarm!, title, description });  
         onClose();  
     };  
 
@@ -28,13 +28,6 @@ const AlarmEditModal: React.FC<AlarmEditModalProps> = ({ isOpen, alarm, onClose,
             <div className="bg-white p-6 rounded shadow-md">  
                 <h2 className="text-lg mb-4"><i className='fas fa-stopwatch mr-2 text-red-600'></i>Edit Alarm</h2>  
                 <form onSubmit={handleSubmit} className='flex flex-col gap-4'>  
-                    <input  
-                        type="time"  
-                        value={time}  
-                        onChange={(e) => setTime(e.target.value)}  
-                        required  
-                        className="mb-2 border rounded p-2"  
-                    />  
                     <input  
                         type="text"  
                         value={title}  

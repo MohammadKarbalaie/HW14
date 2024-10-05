@@ -20,9 +20,9 @@ const AlarmList: React.FC<AlarmListProps> = ({ alarms, onEdit, onDelete, onTrigg
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <button onClick={() => setSortBy('time')} className={`mr-2 ${sortBy === 'time' ? 'font-bold' : ''}`}>Sort by Time</button>
-        <button onClick={() => setSortBy('title')} className={`${sortBy === 'title' ? 'font-bold' : ''}`}>Sort by Title</button>
+      <div className="flex justify-start mb-4">
+        <button onClick={() => setSortBy('time')} className={`mr-2 ${sortBy === 'time' ? 'font-bold' : ''}`}> <i className='fas fa-sort'></i> Time</button>
+        <button onClick={() => setSortBy('title')} className={`${sortBy === 'title' ? 'font-bold ' : ''} `}><i className='fas fa-sort'></i> Title</button>
       </div>
       {sortedAlarms.map((alarm, index) => (
         <div key={index} className="flex justify-between items-center border bg-slate-400 uppercase text-white px-3 py-3 mb-2 rounded-lg shadow-slate-900 shadow-2xl">

@@ -14,8 +14,8 @@ export interface AlarmWithId {
   export interface AlarmWithouId {
       title: string;
       time: string;
-      isActive: boolean; // اضافه کردن این فیلد
-  }
+      isActive: boolean; 
+      }
   
   export interface AlarmWithId extends AlarmWithouId {
       id?: number;

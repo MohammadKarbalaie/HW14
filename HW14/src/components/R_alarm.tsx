@@ -21,7 +21,6 @@ const R_Alarm: React.FC = () => {
             const now = new Date();
             alarms.forEach((alarm) => {
                 const alarmTime = new Date(`${now.toDateString()} ${alarm.time}`);
-                // فقط آلارم‌های فعال را بررسی کنید
                 if (alarmTime <= now && !isAlarmActive && alarm.isActive) {
                     console.log("Alarm triggered:", alarm);
                     setCurrentAlarm(alarm);
@@ -54,7 +53,6 @@ const R_Alarm: React.FC = () => {
 
     const dismissAlarm = () => {
         console.log("Dismiss Alarm called");
-        // غیرفعال کردن آلارم
         if (currentAlarm) {
             setAlarms((prevAlarms) =>
                 prevAlarms.map((alarm) =>
@@ -69,6 +67,32 @@ const R_Alarm: React.FC = () => {
         if (audioRef.current) {
             audioRef.current.pause(); // متوقف کردن صدا
             audioRef.current.currentTime = 0; // Reset audio to start
+        }
+    };
+
+    const extendAlarm = () => {
+        console.log("Extend Alarm called");
+        if (currentAlarm) {
+            // 1. متوقف کردن صدا و بستن مودال
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+            setIsModalOpen(false);
+            setIsAlarmActive(false);
+            setRepeatAlarm(false);
+
+            // 2. تمدید زمان آلارم به مدت ۵ دقیقه (۳۰۰۰۰۰ میلی‌ثانیه)
+            const extendedTime = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 دقیقه اضافه کنید
+            const newTimeString = extendedTime.toTimeString().slice(0, 5); // زمان جدید به فرمت "HH:mm"
+
+            setAlarms((prevAlarms) =>
+                prevAlarms.map((alarm) =>
+                    alarm.id === currentAlarm.id ? { ...alarm, time: newTimeString, isActive: true } : alarm
+                )
+            );
+
+            console.log("Alarm extended for 5 minutes:", newTimeString);
         }
     };
 
@@ -116,9 +140,7 @@ const R_Alarm: React.FC = () => {
                 alarm={currentAlarm}
                 onClose={() => setIsModalOpen(false)}
                 onDismiss={dismissAlarm} // دکمه خاموش
-                onExtend={() => {
-                    // Extend alarm logic (if needed)
-                }}
+                onExtend={extendAlarm} // دکمه تمدید
                 onDelete={() => {
                     if (currentAlarm) {
                         deleteAlarm(alarms.findIndex(a => a.id === currentAlarm.id));
