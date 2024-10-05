@@ -1,98 +1,139 @@
-import React, { useEffect, useState, useRef } from 'react';  
-import AlarmForm from './AlarmForm';  
-import AlarmList from './AlarmList';  
-import AlarmModal from './AlarmModal';  
-import { AlarmWithId,AlarmWithouId } from './types'; 
-import AlarmEditModal from './AlarmEditModal';  
+import React, { useEffect, useState, useRef } from 'react';
+import AlarmForm from './AlarmForm';
+import AlarmList from './AlarmList';
+import AlarmModal from './AlarmModal';
+import { AlarmWithId, AlarmWithouId } from './types';
+import AlarmEditModal from './AlarmEditModal';
 
-const R_Alarm: React.FC = () => {  
-    const [alarms, setAlarms] = useState<AlarmWithId[]>(() => JSON.parse(localStorage.getItem('alarms') || '[]')); 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);  
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);  
-    const [currentAlarm, setCurrentAlarm] = useState<AlarmWithId | null>(null);  
-    const audioRef = useRef<HTMLAudioElement>(new Audio('../assets/alarm-sound.mp3'));  
+const R_Alarm: React.FC = () => {
+    const [alarms, setAlarms] = useState<AlarmWithId[]>(() => JSON.parse(localStorage.getItem('alarms') || '[]'));
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+    const [currentAlarm, setCurrentAlarm] = useState<AlarmWithId | null>(null);
+    const audioRef = useRef<HTMLAudioElement>(new Audio('/public/alarm-sound.mp3'));
+    const [isAlarmActive, setIsAlarmActive] = useState(false);
+    const [repeatAlarm, setRepeatAlarm] = useState<boolean>(false);
 
-    useEffect(() => {  
-        localStorage.setItem('alarms', JSON.stringify(alarms));  
+    useEffect(() => {
+        localStorage.setItem('alarms', JSON.stringify(alarms));
 
-        const interval = setInterval(() => {  
-            const now = new Date();  
-            alarms.forEach((alarm) => {  
-                const alarmTime = new Date(`${now.toDateString()} ${alarm.time}`);  
-                if (alarmTime <= now && !currentAlarm) {  
-                    setCurrentAlarm(alarm);  
-                    audioRef.current.play();  
-                    setIsModalOpen(true);  
-                }  
-            });  
-        }, 1000);  
+        const interval = setInterval(() => {
+            const now = new Date();
+            alarms.forEach((alarm) => {
+                const alarmTime = new Date(`${now.toDateString()} ${alarm.time}`);
+                // فقط آلارم‌های فعال را بررسی کنید
+                if (alarmTime <= now && !isAlarmActive && alarm.isActive) {
+                    console.log("Alarm triggered:", alarm);
+                    setCurrentAlarm(alarm);
+                    setIsModalOpen(true);
+                    setIsAlarmActive(true);
+                    setRepeatAlarm(true); // شروع تکرار صدا
+                }
+            });
+        }, 1000);
 
-        return () => clearInterval(interval);  
-    }, [alarms, currentAlarm]);  
+        return () => clearInterval(interval);
+    }, [alarms, isAlarmActive]);
 
-    const addAlarm = (alarm: AlarmWithouId) => {  
-        setAlarms((prevAlarms) => [...prevAlarms, alarm]);  
-    };  
+    useEffect(() => {
+        if (repeatAlarm) {
+            const playSound = () => {
+                if (audioRef.current) {
+                    audioRef.current.currentTime = 0; // Reset sound to the beginning
+                    audioRef.current.play().catch(error => {
+                        console.error("Error playing audio:", error);
+                    });
+                }
+            };
+            playSound(); // پخش صدا هنگام فعال شدن آلارم
+            const repeatInterval = setInterval(playSound, 1000); // Play sound every second while alarm is active
 
-    const dismissAlarm = () => {  
-        setCurrentAlarm(null);  
-        audioRef.current.pause();  
-        audioRef.current.currentTime = 0;  
-    };  
+            return () => clearInterval(repeatInterval);
+        }
+    }, [repeatAlarm]);
 
-    const deleteAlarm = (index: number) => {  
-        const newAlarms = alarms.filter((_, i) => i !== index);  
-        setAlarms(newAlarms);  
-    };  
+    const dismissAlarm = () => {
+        console.log("Dismiss Alarm called");
+        // غیرفعال کردن آلارم
+        if (currentAlarm) {
+            setAlarms((prevAlarms) =>
+                prevAlarms.map((alarm) =>
+                    alarm.id === currentAlarm.id ? { ...alarm, isActive: false } : alarm
+                )
+            );
+        }
+        setCurrentAlarm(null);
+        setIsModalOpen(false);
+        setIsAlarmActive(false);
+        setRepeatAlarm(false); // Stop repeating sound
+        if (audioRef.current) {
+            audioRef.current.pause(); // متوقف کردن صدا
+            audioRef.current.currentTime = 0; // Reset audio to start
+        }
+    };
 
-    const openEditModal = (alarm: AlarmWithId) => {  
-        setCurrentAlarm(alarm);  
-        setIsEditModalOpen(true);  
-    };  
+    const addAlarm = (alarm: AlarmWithouId) => {
+        setAlarms((prevAlarms) => [...prevAlarms, { ...alarm, id: Date.now(), isActive: true }]);
+    };
 
-    const closeEditModal = () => {  
-        setIsEditModalOpen(false);  
-        setCurrentAlarm(null);  
-    };  
+    const deleteAlarm = (index: number) => {
+        const newAlarms = alarms.filter((_, i) => i !== index);
+        setAlarms(newAlarms);
+    };
 
-    const saveUpdatedAlarm = (updatedAlarm: AlarmWithId) => {  
-        setAlarms((prevAlarms) =>   
-            prevAlarms.map((alarm) => (alarm.id === updatedAlarm.id ? updatedAlarm : alarm))  
-        );  
-        closeEditModal();  
-    };  
+    const openEditModal = (alarm: AlarmWithId) => {
+        setCurrentAlarm(alarm);
+        setIsEditModalOpen(true);
+    };
 
-    const triggerAlarm = (alarm: AlarmWithId) => {  
-        setCurrentAlarm(alarm);  
-        audioRef.current.play();  
-        setIsModalOpen(true);  
-    };  
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+        setCurrentAlarm(null);
+    };
 
-    return (  
-        <div className='flex flex-col items-center my-0 p-8 text-center'>  
-            <i className='fas fa-circle-dot top-[66px] absolute text-white text-sm'></i>  
-            <h1 className='bg-slate-600 px-4 py-2 pt-4 text-white font-semibold text-xl rounded-tl-xl rounded-tr-xl'>Alarm App</h1>  
-            <AlarmForm onAddAlarm={addAlarm} />  
-            <AlarmList  
-                alarms={alarms}  
-                onDelete={deleteAlarm}  
-                onEdit={openEditModal} // اصلاح شده  
-                onTrigger={triggerAlarm}  
-            />  
-            <AlarmModal  
-                isOpen={isModalOpen}  
-                alarm={currentAlarm}  
-                onClose={() => setIsModalOpen(false)}  
-                onDismiss={dismissAlarm}  
-            />  
-            <AlarmEditModal  
-                isOpen={isEditModalOpen}  
-                alarm={currentAlarm}  
-                onClose={closeEditModal}  
-                onSave={saveUpdatedAlarm}  
-            />  
-        </div>  
-    );  
-};  
+    const saveUpdatedAlarm = (updatedAlarm: AlarmWithId) => {
+        setAlarms((prevAlarms) =>
+            prevAlarms.map((alarm) => (alarm.id === updatedAlarm.id ? updatedAlarm : alarm))
+        );
+        closeEditModal();
+    };
+
+    return (
+        <div className='flex flex-col items-center my-0 p-8 text-center'>
+            <h1 className='bg-slate-600 px-4 py-2 pt-4 text-white font-semibold text-xl rounded-tl-xl rounded-tr-xl'>Alarm App</h1>
+            <AlarmForm onAddAlarm={addAlarm} />
+            <AlarmList
+                alarms={alarms}
+                onDelete={deleteAlarm}
+                onEdit={openEditModal}
+                onTrigger={(alarm) => {
+                    setCurrentAlarm(alarm);
+                    setIsModalOpen(true);
+                }}
+            />
+            <AlarmModal
+                isOpen={isModalOpen}
+                alarm={currentAlarm}
+                onClose={() => setIsModalOpen(false)}
+                onDismiss={dismissAlarm} // دکمه خاموش
+                onExtend={() => {
+                    // Extend alarm logic (if needed)
+                }}
+                onDelete={() => {
+                    if (currentAlarm) {
+                        deleteAlarm(alarms.findIndex(a => a.id === currentAlarm.id));
+                        dismissAlarm();
+                    }
+                }}
+            />
+            <AlarmEditModal
+                isOpen={isEditModalOpen}
+                alarm={currentAlarm}
+                onClose={closeEditModal}
+                onSave={saveUpdatedAlarm}
+            />
+        </div>
+    );
+};
 
 export default R_Alarm;
