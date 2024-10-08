@@ -26,7 +26,7 @@ const R_Alarm: React.FC = () => {
                     setCurrentAlarm(alarm);
                     setIsModalOpen(true);
                     setIsAlarmActive(true);
-                    setRepeatAlarm(true); // شروع تکرار صدا
+                    setRepeatAlarm(true); 
                 }
             });
         }, 1000);
@@ -38,14 +38,14 @@ const R_Alarm: React.FC = () => {
         if (repeatAlarm) {
             const playSound = () => {
                 if (audioRef.current) {
-                    audioRef.current.currentTime = 0; // Reset sound to the beginning
+                    audioRef.current.currentTime = 0; 
                     audioRef.current.play().catch(error => {
                         console.error("Error playing audio:", error);
                     });
                 }
             };
-            playSound(); // پخش صدا هنگام فعال شدن آلارم
-            const repeatInterval = setInterval(playSound, 1000); // Play sound every second while alarm is active
+            playSound(); 
+            const repeatInterval = setInterval(playSound, 1000); 
 
             return () => clearInterval(repeatInterval);
         }
@@ -65,15 +65,14 @@ const R_Alarm: React.FC = () => {
         setIsAlarmActive(false);
         setRepeatAlarm(false); // Stop repeating sound
         if (audioRef.current) {
-            audioRef.current.pause(); // متوقف کردن صدا
-            audioRef.current.currentTime = 0; // Reset audio to start
+            audioRef.current.pause(); // stop sound
+            audioRef.current.currentTime = 0; 
         }
     };
 
     const extendAlarm = () => {
         console.log("Extend Alarm called");
         if (currentAlarm) {
-            // 1. متوقف کردن صدا و بستن مودال
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
@@ -82,9 +81,8 @@ const R_Alarm: React.FC = () => {
             setIsAlarmActive(false);
             setRepeatAlarm(false);
 
-            // 2. تمدید زمان آلارم به مدت ۵ دقیقه (۳۰۰۰۰۰ میلی‌ثانیه)
-            const extendedTime = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 دقیقه اضافه کنید
-            const newTimeString = extendedTime.toTimeString().slice(0, 5); // زمان جدید به فرمت "HH:mm"
+            const extendedTime = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 
+            const newTimeString = extendedTime.toTimeString().slice(0, 5); // "HH:mm"
 
             setAlarms((prevAlarms) =>
                 prevAlarms.map((alarm) =>
@@ -139,8 +137,8 @@ const R_Alarm: React.FC = () => {
                 isOpen={isModalOpen}
                 alarm={currentAlarm}
                 onClose={() => setIsModalOpen(false)}
-                onDismiss={dismissAlarm} // دکمه خاموش
-                onExtend={extendAlarm} // دکمه تمدید
+                onDismiss={dismissAlarm} 
+                onExtend={extendAlarm} 
                 onDelete={() => {
                     if (currentAlarm) {
                         deleteAlarm(alarms.findIndex(a => a.id === currentAlarm.id));

@@ -12,7 +12,6 @@ const AlarmForm: React.FC<AlarmFormProps> = ({ onAddAlarm }) => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   useEffect(() => {
-    // اعتبارسنجی فرم: اگر همه فیلدها پر شده باشند
     setIsFormValid(time !== '' && title !== '' && description !== '');
   }, [time, title, description]);
 
